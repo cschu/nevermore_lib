@@ -27,7 +27,7 @@ process prepare_fastqs {
 		prepare_fastqs.py -i . -o . -s ${sample_id} --remove-suffix ${params.suffix_pattern} > run.sh
      	bash run.sh
         """
-	}
+}
 
 workflow remote_fastq_input {
 	take:
@@ -40,6 +40,7 @@ workflow remote_fastq_input {
 
 	emit:
 		fastqs = res_ch
+}
 
 
 workflow fastq_input {
@@ -94,4 +95,4 @@ workflow fastq_input {
     198
     199
     200 }
-*/
+*/	
