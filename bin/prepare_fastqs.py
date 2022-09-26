@@ -205,7 +205,10 @@ def main():
 		full_f = pathlib.Path(os.path.join(args.input_dir, f))
 		if full_f.is_symlink():
 			link_target = full_f.resolve()
-			sample = os.path.basename(os.path.dirname(link_target))
+			# sample = os.path.basename(os.path.dirname(link_target))
+
+			sample, *_ = link_target.replace(args.input_dir, "").lstrip("/").split("/")
+
 			if not sample:
 				raise NotImplementedError("Flat-directories not implemented.")
 			samples.setdefault(sample, []).append(full_f)
