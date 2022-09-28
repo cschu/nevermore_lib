@@ -87,7 +87,7 @@ workflow fastq_input {
 		fastq_ch
 	
 	main:
-		prepare_fastqs(fastq_ch.collect(), input_dir)
+		prepare_fastqs(fastq_ch.collect(), (params.remote_input_dir != null || params.remote_input_dir))
 
 		fastq_ch = prepare_fastqs.out.fastqs
 			.flatten()
