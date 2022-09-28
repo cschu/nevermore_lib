@@ -9,6 +9,8 @@ if (!params.bam_input_pattern) {
 
 def bam_suffix_pattern = params.bam_input_pattern.replaceAll(/\*/, "")
 
+def input_dir = (params.input_dir) ? params.input_dir : params.remote_input_dir
+
 
 process transfer_fastqs {
 	input:
@@ -85,7 +87,7 @@ workflow fastq_input {
 		fastq_ch
 	
 	main:
-		prepare_fastqs(fastq_ch.collect(), params.remote_input_dir)
+		prepare_fastqs(fastq_ch.collect(), input_dir)
 
 		fastq_ch = prepare_fastqs.out.fastqs
 			.flatten()
