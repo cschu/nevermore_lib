@@ -169,11 +169,11 @@ def is_fastq(f):
 
 	"""
 	prefix, suffix = os.path.splitext(f)
-	if suffix in (".fastq", ".fq"):
+	if suffix in (".fastq", ".fq", ".txt"):
 		return True
 	if suffix == ".gz":
 		_, suffix = os.path.splitext(prefix)
-		return suffix in (".fastq", ".fq")
+		return suffix in (".fastq", ".fq", ".txt")
 	return False
 
 
