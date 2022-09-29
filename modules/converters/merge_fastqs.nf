@@ -9,7 +9,7 @@ process merge_single_fastqs {
 
     def fastq_in = ""
     def prefix = ""
-    if (fastqs instanceof Collection && files.size() == 2) {
+    if (fastqs instanceof Collection && fastqs.size() == 2) {
         prefix = "cat ${fastqs} |"
     } else {
         fastq_in = "${fastqs[0]}"
