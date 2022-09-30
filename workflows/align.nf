@@ -11,16 +11,13 @@ include { merge_single_fastqs } from "../modules/converters/merge_fastqs"
 def asset_dir = "${projectDir}/nevermore/assets"
 
 
-workflow nevermore_align {
+workflow nevermore_prep_align {
 
 	take:
-
 		fastq_ch
-
+	
 	main:
-
 		/*	route all single-read files into a common channel */
-
 		single_ch = fastq_ch
 			.filter { it[0].is_paired == false }
 			.map { sample, fastq ->
@@ -96,10 +93,28 @@ workflow nevermore_align {
 			"qc"
 		)
 
+		fastq_prep_ch = paired_ch.concat(merge_single_fastqs.out.fastq)
+
+	emit:
+		fastqs = fastq_prep_ch
+		read_counts = fastqc.out.counts
+		
+
+}
+
+
+workflow nevermore_align {
+
+	take:
+
+		fastq_ch
+
+	main:
+		
 		/*	align merged single-read and paired-end sets against reference */
 
 		bwa_mem_align(
-			paired_ch.concat(merge_single_fastqs.out.fastq),
+			fastq_ch,
 			params.reference,
 			true
 		)
@@ -119,7 +134,6 @@ workflow nevermore_align {
 	emit:
 
 		alignments = merge_and_sort.out.bam
-		read_counts = fastqc.out.counts
 		aln_counts = merge_and_sort.out.flagstats
 
 }
