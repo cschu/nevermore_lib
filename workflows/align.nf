@@ -18,6 +18,7 @@ workflow nevermore_prep_align {
 	
 	main:
 		/*	route all single-read files into a common channel */
+
 		single_ch = fastq_ch
 			.filter { it[0].is_paired == false }
 			.map { sample, fastq ->
@@ -66,6 +67,7 @@ workflow nevermore_prep_align {
 			concat with merged single-read files (takes care of single-end qc-survivors),
 			concat with paired-end files,
 			and route them into a channel for post-qc fastqc analysis
+			(THIS IS JUST FOR STATS PURPOSES, NO WORRIES, THE SE READS ARE PROCESSED PROPERLY!)
 		*/
 
 		fastqc_in_ch = single_ch
