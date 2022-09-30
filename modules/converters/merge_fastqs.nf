@@ -25,6 +25,4 @@ process merge_single_fastqs {
     ${prefix} sortbyname.sh in=${fastq_in} out=merged/${sample.id}_R1.fastq.gz ${suffix}
     """
     // https://stackoverflow.com/questions/22464786/ignoring-bash-pipefail-for-error-code-141/72985727#72985727 
-    // cat *.fastq.gz | sortbyname.sh in=stdin.gz out=merged/${sample.id}_R1.fastq.gz
-
 }
