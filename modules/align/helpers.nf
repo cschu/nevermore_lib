@@ -1,6 +1,6 @@
 process merge_and_sort {
     label 'samtools'
-    publishDir params.output_dir, mode: params.publish_mode
+    // publishDir params.output_dir, mode: params.publish_mode
 
     input:
     tuple val(sample), path(bamfiles)
