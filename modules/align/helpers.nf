@@ -56,7 +56,7 @@ process db2bed3 {
     path("db.bed3"), emit: db
 
     script:
-    '''
-    sqlite3 ${db} "select seqid,start,end from annotatedsequence;" ".exit" | awk -F \| -v OFS='\t' '{print $1,$2-1,$3}' | sort -k1,1 -k2,2g -k3,3g > db.bed3
-    '''
+    """
+    sqlite3 ${db} "select seqid,start,end from annotatedsequence;" ".exit" | awk -F \| -v OFS='\t' '{print \$1,\$2-1,\$3}' | sort -k1,1 -k2,2g -k3,3g > db.bed3
+    """
 }
