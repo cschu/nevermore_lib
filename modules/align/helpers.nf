@@ -43,7 +43,7 @@ process db_filter {
     script:
     """
     mkdir -p filtered_bam/ stats/filtered_bam/
-    bedtools intersect -u -ubam -a ${bam} -b {db_bedfile} > filtered_bam/${sample}.bam
+    bedtools intersect -u -ubam -a ${bam} -b ${db_bedfile} > filtered_bam/${sample}.bam
     samtools flagstats filtered_bam/${sample}.bam > stats/filtered_bam/${sample}.flagstats.txt
     """
 }
