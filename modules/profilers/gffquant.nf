@@ -8,6 +8,7 @@ process run_gffquant {
 
 	output:
 	tuple val(sample), path("${sample}/*.txt.gz"), emit: results
+	tuple val(sample), path("logs/${sample}.log")
 
 	script:
 	def gq_output = "-o ${sample}/${sample}"
@@ -54,8 +55,8 @@ process run_gffquant {
 	echo 'Copying database...'
 	cp -v ${gq_db} gq_db.sqlite3
 	${mk_aln_sam}
-	${gq_cmd} > logs/${sample}.o 2> logs/${sample}.e
-	rm -rfv gq_db.sqlite3 tmp/
+	${gq_cmd} &> logs/${sample}.log
+	rm -rfv gq_db.sqlite3* tmp/
 	"""
 }
 
