@@ -11,7 +11,7 @@ process merge_single_fastqs {
     def prefix = ""
     def suffix = ""
     if (fastqs instanceof Collection && fastqs.size() == 2) {
-        prefix = "cat ${fastqs} | gzip -dc"
+        prefix = "cat ${fastqs} | gzip -dc |"
         fastq_in = "stdin.fastq"
         suffix = " || { ec=\$?; [ \$ec -eq 141 ] && true || (exit \$ec); }"
     } else {
