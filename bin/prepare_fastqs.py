@@ -81,16 +81,17 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 	 - list of fastq files
 	 - path to output directory
 	 - suffix to strip off from filenames (e.g. _001)
-	 - fastq files are located on remote file system
+	 - whether fastq files are located on remote file system
 	"""
 
 	if len(fastqs) == 1:
 		# remove potential "single(s)" string from single fastq file name prefix
 		sample_sub = re.sub(r"[._]singles?", "", sample)
-		if sample_sub != sample:
-			# if file name had single(s) pattern,
-			# attach it to the end of the prefix
-			sample = sample_sub + ".singles"
+		# 20221018: and attach it at the end of the sample name
+		# - this might be a temporary fix, but @93a73d0
+		# single-end samples without .singles-suffix cause problems 
+		# with fastqc results in the collate step
+		sample = sample_sub + ".singles"
 		sample_dir = os.path.join(output_dir, sample)
 		pathlib.Path(sample_dir).mkdir(parents=True, exist_ok=True)
 
@@ -145,7 +146,7 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 			# if R2 is not empty, transfer R2-files,
 			# if R1 is empty, rename R2 to R1 so that files can be processed as normal single-end
 			target_r = "R2" if r1 else "R1"
-			dest = os.path.join(sample_dir, f"{sample}_R2.fastq.gz")
+			dest = os.path.join(sample_dir, f"{sample}_{target_r}.fastq.gz")
 			transfer_multifiles(r2, dest, remote_input=remote_input, gzipped=bool(gzips))
 		if others:
 			# if single-end reads exist,
@@ -206,13 +207,20 @@ def main():
 		full_f = pathlib.Path(os.path.join(args.input_dir, f))
 		if full_f.is_symlink():
 			link_target = full_f.resolve()
-			# sample = os.path.basename(os.path.dirname(link_target))
-
-			sample, *fpath = str(link_target).replace(args.prefix, "").lstrip("/").split("/")
-
-			if not fpath:
-				raise NotImplementedError("Flat-directories not implemented.")
+			sample, *_, _ = str(link_target).replace(args.prefix, "").lstrip("/").split("/")
 			samples.setdefault(sample, []).append(full_f)
+
+	# if there is only one sample, this points at a flat sample hierarchy (input_dir/{file1,file2,file3,...})
+	# in this case, we derive the sample names from the files: same prefix -> same sample
+	# in a flat sample hierarchy, we cannot have mixed file prefixes, i.e. no lanes, no preprocessed singles, etc.
+	if len(samples) == 1:
+		tmp_samples = {}
+		for f in samples[list(samples.keys())[0]]:
+			sample = re.sub(r"\.(fastq|fq|txt)(.gz)?$", "", os.path.basename(f.name))
+			sample = re.sub(r"([._R][12])$?", "", sample)
+			tmp_samples.setdefault(sample, []).append(f)
+		samples.clear()
+		samples = tmp_samples		
 
 	# check and transfer the files
 	for sample, fastqs in samples.items():
