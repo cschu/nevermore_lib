@@ -1,6 +1,5 @@
 process run_gffquant {
 	label "gffquant"
-	// publishDir "${params.output_dir}", mode: params.publish_mode
 
 	input:
 	tuple val(sample), path(alignments)
