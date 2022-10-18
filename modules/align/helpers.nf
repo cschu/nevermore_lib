@@ -1,6 +1,5 @@
 process merge_and_sort {
     label 'samtools'
-    // publishDir params.output_dir, mode: params.publish_mode
 
     input:
     tuple val(sample), path(bamfiles)
@@ -12,22 +11,22 @@ process merge_and_sort {
 
     script:
     def sort_order = (do_name_sort) ? "-n" : ""
+    def merge_cmd = ""
+
     // need a better detection for this
     if (bamfiles instanceof Collection && bamfiles.size() >= 2) {
-        """
-        mkdir -p bam/ stats/bam
-        samtools merge -@ $task.cpus ${sort_order} bam/${sample}.bam ${bamfiles}
-        samtools flagstats bam/${sample}.bam > stats/bam/${sample}.flagstats.txt
-        """
+        merge_cmd = "samtools merge -@ $task.cpus ${sort_order} bam/${sample}.bam ${bamfiles}"
     } else {
-        // i don't like this solution
-        """
-        mkdir -p bam/ stats/bam
-        ln -s ../${bamfiles[0]} bam/${sample}.bam
-        samtools flagstats bam/${sample}.bam > stats/bam/${sample}.flagstats.txt
-        """
+        merge_cmd = "ln -s ../${bamfiles[0]} bam/${sample}.bam"
     }
+
+    """
+    mkdir -p bam/ stats/bam/
+    ${merge_cmd}
+    samtools flagstats bam/${sample}.bam > stats/bam/${sample}.flagstats.txt
+    """
 }
+
 
 process db_filter {
     label 'samtools'

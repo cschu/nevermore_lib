@@ -81,16 +81,17 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 	 - list of fastq files
 	 - path to output directory
 	 - suffix to strip off from filenames (e.g. _001)
-	 - fastq files are located on remote file system
+	 - whether fastq files are located on remote file system
 	"""
 
 	if len(fastqs) == 1:
 		# remove potential "single(s)" string from single fastq file name prefix
 		sample_sub = re.sub(r"[._]singles?", "", sample)
-		if sample_sub != sample:
-			# if file name had single(s) pattern,
-			# attach it to the end of the prefix
-			sample = sample_sub + ".singles"
+		# 20221018: and attach it at the end of the sample name
+		# - this might be a temporary fix, but @93a73d0
+		# single-end samples without .singles-suffix cause problems 
+		# with fastqc results in the collate step
+		sample = sample_sub + ".singles"
 		sample_dir = os.path.join(output_dir, sample)
 		pathlib.Path(sample_dir).mkdir(parents=True, exist_ok=True)
 
