@@ -38,7 +38,6 @@ process transfer_bams {
 
 
 process prepare_fastqs {
-	// publishDir params.output_dir, mode: "${params.publish_mode}"
 
 	input:
 		path(files)
@@ -53,7 +52,7 @@ process prepare_fastqs {
 		"""
 		mkdir -p fastq/
 		prepare_fastqs.py -i . -o fastq/ -p ${input_dir_prefix} ${remote_option} ${remove_suffix}
-   		"""
+		"""
 }
 
 
