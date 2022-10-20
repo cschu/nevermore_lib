@@ -5,10 +5,11 @@ process run_metaphlan4 {
 	path(mp4_db)
 
 	output:
-	tuple val(sample), path("mp4/${sample.id}/${sample.id}.mp4.txt"), emit: mp4_table
+	// tuple val(sample), path("mp4/${sample.id}/${sample.id}.mp4.txt"), emit: mp4_table
+	tuple val(sample), path("${sample.id}.bowtie2.bz2"), emit: mp4_bt2
 	
 	script:
-	def mp4_params = "--bowtie2db ${mp4_db} --input_type fastq --nproc ${task.cpus}"
+	def mp4_params = "--bowtie2db ${mp4_db} --input_type fastq --nproc ${task.cpus} --tmp_dir tmp/"
 	def mp4_input = ""
 	def bt2_out = "--bowtie2out ${sample.id}.bowtie2.bz2"
 	if (!sample.is_paired) {
@@ -18,25 +19,43 @@ process run_metaphlan4 {
 	}
 
 	"""
-	mkdir -p mp4/${sample.id}/
+	mkdir -p tmp/
 
-	metaphlan ${mp4_input} ${mp4_params} ${bt2_out} -o mp4/${sample.id}/${sample.id}.mp4.txt
+	metaphlan ${mp4_input} ${mp4_params} ${bt2_out} -o ${sample.id}.mp4.txt
 	"""
 }
+
+process combine_metaphlan4 {
+
+	input:
+	tuple val(sample), path(bt2)
+
+	output:
+	tuple val(sample), path("metaphlan4/${sample.id}/${sample.id}.mp4.txt"), emit: mp4_table
+
+	script:
+	def mp4_params = "--input_type bowtie2out --nproc ${task.cpus} --tmp_dir tmp/"
+	"""
+	mkdir -p mp4/${sample.id}/
+
+	cat ${bt2} | metaphlan ${mp4_params} ${bt2_out} -o metaphlan4/${sample.id}/${sample.id}.mp4.txt
+	"""
+}
+
 
 process collate_metaphlan4_tables {
 
 	input:
-	tuple val(sample_id), path(tables)
+	path(tables)
 
 	output:
-	tuple val(sample_id), path("metaphlan4/${sample_id}.mp4_abundance_table.txt")
+	path("metaphlan4_abundance_table.txt")
 
 	script:
 	"""
 	mkdir -p metaphlan4/
 
-	merge_metaphlan_tables.py ${tables} > metaphlan4/${sample_id}.mp4_abundance_table.txt
+	merge_metaphlan_tables.py ${tables} > metaphlan4_abundance_table.txt
 	"""
 
 }
