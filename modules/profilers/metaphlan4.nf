@@ -22,6 +22,21 @@ process run_metaphlan4 {
 
 	metaphlan ${mp4_input} ${mp4_params} ${bt2_out} -o mp4/${sample.id}/${sample.id}.mp4.txt
 	"""
+}
 
+process collate_metaphlan4_tables {
+
+	input:
+	tuple val(sample_id), path(tables)
+
+	output:
+	tuple val(sample_id), path("metaphlan4/${sample_id}.mp4_abundance_table.txt")
+
+	script:
+	"""
+	mkdir -p metaphlan4/
+
+	merge_metaphlan_tables.py ${tables} > metaphlan4/${sample_id}.mp4_abundance_table.txt
+	"""
 
 }
