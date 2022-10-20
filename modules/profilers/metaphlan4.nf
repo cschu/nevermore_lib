@@ -39,7 +39,10 @@ process combine_metaphlan4 {
 	"""
 	mkdir -p mp4/${sample.id}/
 
-	cat ${bt2} | metaphlan ${mp4_params} ${bt2_out} -o metaphlan4/${sample.id}/${sample.id}.mp4.txt
+	cat ${bt2} | bzip2 -dc - | bzip2 -c - > tmp/bowtie2out.bz2
+
+	cat ${bt2} | metaphlan tmp/bowtie2out.bz2 ${mp4_params} -o metaphlan4/${sample.id}/${sample.id}.mp4.txt
+	rm -rvf tmp/
 	"""
 }
 
