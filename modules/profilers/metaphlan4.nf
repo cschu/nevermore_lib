@@ -5,7 +5,7 @@ process run_metaphlan4 {
 	path(mp4_db)
 
 	output:
-	tuple val(sample), path("mp4/${sample.id}/${sample.id}.mp4.txt"), emit: mp4_table
+	tuple val(sample), path("${sample.id}.mp4.txt"), emit: mp4_table
 	// tuple val(sample), path("${sample.id}.bowtie2.bz2"), emit: mp4_bt2
 	
 	script:
