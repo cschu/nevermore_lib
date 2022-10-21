@@ -14,9 +14,9 @@ process run_metaphlan4 {
 	def bt2_out = "--bowtie2out ${sample.id}.bowtie2.bz2"
 
 	
-	if (fastqs instanceof Collection && files.size() == 2) {
+	if (fastqs instanceof Collection && fastqs.size() == 2) {
 		mp4_input = "${sample.id}_R1.fastq.gz,${sample.id}_R2.fastq.gz"
-	} else if (fastqs instanceof Collection && files.size() == 3) {
+	} else if (fastqs instanceof Collection && fastqs.size() == 3) {
 		mp4_input = "${sample.id}_R1.fastq.gz,${sample.id}_R2.fastq.gz,${sample.id}.singles_R1.fastq.gz"
 	} else {
 		mp4_input = "${fastqs}"
