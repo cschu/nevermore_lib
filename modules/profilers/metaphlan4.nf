@@ -26,7 +26,6 @@ process run_metaphlan4 {
 	mkdir -p tmp/
 
 	metaphlan ${mp4_input} ${mp4_params} ${bt2_out} -o ${sample.id}.mp4.txt
-	rm -rvf tmp/
 	"""
 }
 
