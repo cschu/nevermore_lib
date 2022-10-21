@@ -36,13 +36,11 @@ process combine_metaphlan4 {
 	script:
 	def mp4_params = "--input_type bowtie2out --nproc ${task.cpus} --tmp_dir tmp/"
 	def bt2_out = "--bowtie2out ${sample.id}.bowtie2.bz2"
+	def mp4_input = "${sample.id}.bowtie2.bz2,${sample.id}.singles.bowtie2.bz2"
 	"""
-	mkdir -p tmp/ metaphlan4/${sample.id}/
+	mkdir -p metaphlan4/${sample.id}/
 
-	cat ${bt2} | bzip2 -dc - | bzip2 -c - > tmp/bowtie2out.bz2
-
-	metaphlan tmp/bowtie2out.bz2 ${mp4_params} -o metaphlan4/${sample.id}/${sample.id}.mp4.txt
-	rm -rvf tmp/
+	metaphlan ${mp4_input} ${mp4_params} -o metaphlan4/${sample.id}/${sample.id}.mp4.txt
 	"""
 }
 
