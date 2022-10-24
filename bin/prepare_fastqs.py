@@ -37,14 +37,14 @@ def transfer_file(source, dest, remote_input=False):
 
 	"""
 	resolved_src = source  #.resolve()
-	if source.name.endswith(".gz"):
+	if source.endswith(".gz"):
 		if remote_input:
 			# if file is on remote file system, copy it to destination
 			shutil.copyfile(resolved_src, dest)
 		else:
 			# if file is gzipped and on local fs, just symlink it
 			pathlib.Path(dest).symlink_to(resolved_src)
-	elif source.name.endswith(".bz2"):
+	elif source.endswith(".bz2"):
 		bz2_pr = subprocess.Popen(("bzip2", "-c", resolved_src), stdout=subprocess.PIPE)
 		with open(dest, "wt") as _out:
 			subprocess.run(("gzip", "-c", "-"), stdin=bz2_pr.stdout, stdout=_out)
