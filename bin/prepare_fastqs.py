@@ -63,7 +63,7 @@ def transfer_multifiles(files, dest, remote_input=False, compression=None):
 	 - whether source files are considered to be located on a remote file system
 	 - the compression type of the files (supported: None, gz, bz2)
 	"""
-	print(f"transfer_multifiles: remote={remote_input} compression={compression} dest={dest}")
+	print(f"transfer_multifiles: remote={remote_input} compression={compression} dest={dest}", file=sys.stderr, flush=True)
 
 	if len(files) > 1:
 		src_files = tuple(os.path.abspath(f) for f in files)  # tuple(f.resolve() for f in files)
