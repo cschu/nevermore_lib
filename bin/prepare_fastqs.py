@@ -116,7 +116,7 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 
 		# check if all fastq files are compressed the same way
 		suffixes = Counter(
-			f.name[f.name.rfind("."):] in ("gz", "bz2") for f in fastqs
+			f[f.rfind("."):] in ("gz", "bz2") for f in fastqs
 		)
 
 		if len(suffixes) > 1:
@@ -125,7 +125,7 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 		if suffixes.most_common()[0][0]:
 			# all compressed
 			suffixes = Counter(
-				f.name[f.name.rfind("."):] for f in fastqs
+				f[f.rfind("."):] for f in fastqs
 			)
 			if len(suffixes) > 1:
 				raise ValueError(f"sample: {sample} has mixed gzip and bzip2 files. Please check.")
