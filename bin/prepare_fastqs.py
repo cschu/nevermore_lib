@@ -64,7 +64,7 @@ def transfer_multifiles(files, dest, remote_input=False, compression=None):
 	 - the compression type of the files (supported: None, gz, bz2)
 	"""
 	if len(files) > 1:
-		src_files = tuple(files)  # tuple(f.resolve() for f in files)
+		src_files = tuple(os.path.abspath(f) for f in files)  # tuple(f.resolve() for f in files)
 		cat_cmd = ("cat", ) + src_files
 
 		if compression == "gz":
@@ -178,7 +178,7 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 				# if R1 is empty, rename R2 to R1 so that files can be processed as normal single-end
 				target_r = "R2" if r1 else "R1"
 				dest = os.path.join(sample_dir, f"{sample}_{target_r}.fastq.gz")
-				transfer_multifiles(r2, dest, remote_input=remote_input, gzipped=compression)
+				transfer_multifiles(r2, dest, remote_input=remote_input, compression=compression)
 
 		if others:
 			# if single-end reads exist,
