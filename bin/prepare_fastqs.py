@@ -36,7 +36,7 @@ def transfer_file(source, dest, remote_input=False):
 	 - whether source file is considered to be located on a remote file system
 
 	"""
-	resolved_src = source.resolve()
+	resolved_src = source  #.resolve()
 	if source.name.endswith(".gz"):
 		if remote_input:
 			# if file is on remote file system, copy it to destination
@@ -64,7 +64,7 @@ def transfer_multifiles(files, dest, remote_input=False, compression=None):
 	 - the compression type of the files (supported: None, gz, bz2)
 	"""
 	if len(files) > 1:
-		src_files = tuple(f.resolve() for f in files)
+		src_files = files  # tuple(f.resolve() for f in files)
 		cat_cmd = ("cat", ) + src_files
 
 		if compression == "gz":
