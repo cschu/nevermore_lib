@@ -64,7 +64,7 @@ def transfer_multifiles(files, dest, remote_input=False, compression=None):
 	 - the compression type of the files (supported: None, gz, bz2)
 	"""
 	if len(files) > 1:
-		src_files = files  # tuple(f.resolve() for f in files)
+		src_files = tuple(files)  # tuple(f.resolve() for f in files)
 		cat_cmd = ("cat", ) + src_files
 
 		if compression == "gz":
