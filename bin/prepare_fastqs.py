@@ -134,7 +134,7 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 			compression = None
 
 		# extract the file name prefixes
-		prefixes = [re.sub(r"\.(fastq|fq|txt)(.(gz|bz2))?$", "", os.path.basename(f.name)) for f in fastqs]
+		prefixes = [re.sub(r"\.(fastq|fq|txt)(.(gz|bz2))?$", "", os.path.basename(f)) for f in fastqs]
 		if remove_suffix:
 			# remove suffix pattern if requested
 			prefixes = [re.sub(remove_suffix + r"$", "", p) for p in prefixes]
