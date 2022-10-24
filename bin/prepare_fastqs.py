@@ -75,7 +75,7 @@ def transfer_multifiles(files, dest, remote_input=False, compression=None):
 			cat_pr = subprocess.Popen(cat_cmd, stdout=subprocess.PIPE)
 			bz2_pr = subprocess.Popen(("bzip2", "-dc", "-"), stdin=cat_pr.stdout, stdout=subprocess.PIPE)
 			with open(dest, "wt") as _out:
-				subprocess.Popen(("gzip", "-c", "-"), stdin=bz2_pr.stdout, stdout=_out)
+				subprocess.run(("gzip", "-c", "-"), stdin=bz2_pr.stdout, stdout=_out)
 		else:
 			# multiple uncompressed files will be cat | gzipped
 			cat_pr = subprocess.Popen(cat_cmd, stdout=subprocess.PIPE)
