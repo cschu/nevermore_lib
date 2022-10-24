@@ -161,6 +161,7 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 
 		print("R1", r1, file=sys.stderr)
 		print("R2", r2, file=sys.stderr)
+		print("others", others, file=sys.stderr, flush=True)
 
 		sample_dir = os.path.join(output_dir, sample)
 
