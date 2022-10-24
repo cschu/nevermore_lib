@@ -75,7 +75,7 @@ def transfer_multifiles(files, dest, remote_input=False, compression=None):
 			cat_pr = subprocess.Popen(cat_cmd, stdout=subprocess.PIPE)
 			bz2_pr = subprocess.Popen(("bzip2", "-dc", "-"), stdin=cat_pr.stdout, stdout=subprocess.PIPE)
 			with open(dest, "wt") as _out:
-				subprocess.run(("gzip", "-c", "-"), stdin=bz2_pr.stdout, stdout=_out)
+				subprocess.Popen(("gzip", "-c", "-"), stdin=bz2_pr.stdout, stdout=_out)
 		else:
 			# multiple uncompressed files will be cat | gzipped
 			cat_pr = subprocess.Popen(cat_cmd, stdout=subprocess.PIPE)
@@ -144,7 +144,7 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 		# partition fastqs into R1, R2, and 'other' sets
 		r1 = [(p, f) for p, f in zip(prefixes, fastqs) if re.search(r"[._R]1$", p)]
 		r2 = [(p, f) for p, f in zip(prefixes, fastqs) if re.search(r"[._R]2$", p)]
-		others = list(set(fastqs).difference({f for _, f in r1}).difference({f for _, f in r2}))
+		others = sorted(list(set(fastqs).difference({f for _, f in r1}).difference({f for _, f in r2})))
 
 		# check if R1/R2 sets have equal sizes or are empty
 		# R1 empty: potential scRNAseq (or any protocol with barcode reads in R1)
