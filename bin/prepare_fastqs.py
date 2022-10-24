@@ -131,7 +131,7 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 			)
 			if len(suffixes) > 1:
 				raise ValueError(f"sample: {sample} has mixed gzip and bzip2 files. Please check.")
-			compression = suffixes.most_common()[0][0][1:]
+			compression = suffixes.most_common()[0][0]
 		else:
 			compression = None
 
