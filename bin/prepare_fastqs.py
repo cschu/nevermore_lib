@@ -36,7 +36,7 @@ def transfer_file(source, dest, remote_input=False):
 	 - whether source file is considered to be located on a remote file system
 
 	"""
-	resolved_src = source  #.resolve()
+	resolved_src = pathlib.Path(source).resolve()
 	if source.endswith(".gz"):
 		if remote_input:
 			# if file is on remote file system, copy it to destination
@@ -136,7 +136,7 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 			compression = None
 
 		# extract the file name prefixes
-		prefixes = [re.sub(r"\.(fastq|fq|txt)(.(gz|bz2))?$", "", os.path.basename(f)) for f in fastqs]
+		prefixes = [re.sub(r"[._](fastq|fq|txt)([._](gz|bz2))?$", "", os.path.basename(f)) for f in fastqs]
 		if remove_suffix:
 			# remove suffix pattern if requested
 			prefixes = [re.sub(remove_suffix + r"$", "", p) for p in prefixes]
@@ -254,10 +254,10 @@ def main():
 		raise ValueError("Found {len(root_fastqs)} fastq files in input directory together with {len(samples)} sample directories. Please check input data.")
 	elif root_fastqs:
 		for f in root_fastqs:
-			sample = re.sub(r"\.(fastq|fq|txt)(.(gz|bz2))?$", "", os.path.basename(f))
-			sample = re.sub(r"([._R][12])$?", "", sample)
+			sample = re.sub(r"[._](fastq|fq|txt)([._](gz|bz2))?$", "", os.path.basename(f))
+			sample = re.sub(r"([._R][12])$", "", sample)
 			samples.setdefault(sample, []).append(f)
-	
+
 	# # collect all fastq files from input directory
 	# # assumption: fastq files are sym-linked into input_dir from a sample/files directory tree
 	# # i.e., from a nextflow.Channel()
